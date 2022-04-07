@@ -1,0 +1,78 @@
+<div class="mapping-container">
+  <form>
+    <div>
+      <label>Filter out top FLOAT fraction of repetitive minimizers </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 0.0002</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Stop chain enlongation if there are no minimizers in INT-bp: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 5000</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Max intron length: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 200k</mat-label>
+        <input matInput placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Max fragment length: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 800</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Chaining/alignment bandwidth and long-join bandwidth: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: [500,20000]</mat-label>
+        <input matInput placeholder="Format: NUM,NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Minimal number of minimizers on a chain: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 3</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>minimal chaining score (matching bases minus log gap penalty): </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 40</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Min secondary-to-primary score ratio: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 0.8</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Retain at most INT secondary alignments: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 5</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <mat-checkbox>Skip self and dual mappings (for the all-vs-all mode)</mat-checkbox>
+
+  </form>
+</div>

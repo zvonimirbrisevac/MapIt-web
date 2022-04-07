@@ -15,12 +15,14 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInput, MatInputModule} from "@angular/material/input";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MappingFormComponent } from './components/mapping-form/mapping-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    AlignFormComponent
+    AlignFormComponent,
+    MappingFormComponent
   ],
   imports: [
     BrowserModule,

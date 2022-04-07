@@ -1,0 +1,19 @@
+.mapping-container .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+
+.mapping-container .mat-form-field {
+  width: 220px;
+}
+
+.mapping-container form {
+  margin-bottom: 20px;
+}
+
+.mapping-container form > * {
+  margin: 5px 0;
+}
+
+.mapping-container .mat-radio-button {
+  margin: 0 12px;
+}
