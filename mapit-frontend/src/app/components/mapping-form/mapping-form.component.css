@@ -6,6 +6,23 @@
   width: 220px;
 }
 
+.mapping-container {
+  margin: 20px;
+}
+
+.mapping-container-field{
+  display: flex;
+  flex-direction: row;
+}
+
+.mapping-container-field label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 20px;
+  font-size: larger;
+}
+
 .mapping-container form {
   margin-bottom: 20px;
 }

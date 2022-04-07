@@ -6,6 +6,23 @@
   width: 220px;
 }
 
+.align-container {
+  margin: 20px;
+}
+
+.align-container-field{
+  display: flex;
+  flex-direction: row;
+}
+
+.align-container-field label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 20px;
+  font-size: larger;
+}
+
 .align-container form {
   margin-bottom: 20px;
 }
