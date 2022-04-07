@@ -1,0 +1,72 @@
+<div class="align-container">
+  <form> <!--[formGroup]="options">!-->
+<!--    <mat-checkbox [formControl]="hideRequiredControl">Hide required marker</mat-checkbox>-->
+<!--    <div>-->
+<!--      <label>Float label: </label>-->
+<!--      <mat-radio-group [formControl]="floatLabelControl">-->
+<!--        <mat-radio-button value="auto">Auto</mat-radio-button>-->
+<!--        <mat-radio-button value="always">Always</mat-radio-button>-->
+<!--      </mat-radio-group>-->
+<!--    </div>-->
+    <div>
+      <label>Matching score: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 2</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Mismatch penalty: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 4</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Gap open penalty: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: [4,24]</mat-label>
+        <input matInput placeholder="Format: NUM,NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Gap extension penalty; a k-long gap costs min {{"{"}}O1+k*E1,O2+k*E2{{"}"}}: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: [2,1]</mat-label>
+        <input matInput placeholder="Format: NUM,NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Z-drop score and inversion Z-drop score: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: [400,200]</mat-label>
+        <input matInput placeholder="Format NUM,NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>Minimal peak DP alignment score: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: 80</mat-label>
+        <input matInput type="number" placeholder="Format: NUM">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <label>How to find GT-AG</label>
+      <mat-form-field appearance="fill">
+        <mat-label>Default: Don't match GT-AG</mat-label>
+        <mat-select>
+          <mat-option value="dont">Don't match GT-AG</mat-option>
+          <mat-option value="trans">Transcript strand</mat-option>
+          <mat-option value="both">Both strand</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </form>
+</div>

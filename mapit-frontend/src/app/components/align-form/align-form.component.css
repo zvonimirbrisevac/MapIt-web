@@ -1,0 +1,19 @@
+.align-container .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+
+.align-container .mat-form-field {
+  width: 220px;
+}
+
+.align-container form {
+  margin-bottom: 20px;
+}
+
+.align-container form > * {
+  margin: 5px 0;
+}
+
+.align-container .mat-radio-button {
+  margin: 0 12px;
+}

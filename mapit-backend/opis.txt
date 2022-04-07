@@ -1,0 +1,5 @@
+- Korisnik ima sučelje s formom gdje izabire sve parametre i sranja
+- forma se šalje iza backendu
+- backend sprema informacije o procesu i parametre u bazu / proces slaže naredbu?
+- pokreće se process runner i daje mu se id procesa da zna dohvatit sve u bazi
+- process runner prati stanje, ažurira ga u bazi i šalje korisniku rezultate

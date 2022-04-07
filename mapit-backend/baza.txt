@@ -1,0 +1,37 @@
+PROCESS
+    - id
+    - type
+    - status
+    - email
+
+FILE
+    - fileId
+    - processId
+    - name/path ?
+    - url ?
+    - referenceFile (0/1)
+
+PARAMETER
+    - processId
+    - shortcut
+    - name
+    - value
+
+MAPPING_RESULT
+    - id
+    - processId
+    - averageQueryCoverage
+    - percantageOriginal
+    - percantageOfMatches
+    - lenghtOfAlignmentBlocks
+    - mappingQuality
+
+ALIGNMENT_RESULT
+    - id
+    - processId
+    - properlyAligned
+    - alignmentsOriginal
+    - alignmentsUnmapped
+    - secondaryAlignments
+    - suplementaryAlignments
+    - mappingQuality

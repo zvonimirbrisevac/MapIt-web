@@ -1,0 +1,59 @@
+Generate SQL
+
+CREATE TABLE Process
+(
+  id INT NOT NULL,
+  type VARCHAR(20) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  startTimeAndDate  NOT NULL,    --------------------- dodaj tip
+  endTimeAndDate  NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE File
+(
+  id INT NOT NULL,
+  path VARCHAR(1000) NOT NULL,
+  referenceFile INT NOT NULL,
+  processId INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (processId) REFERENCES Process(id)
+);
+
+CREATE TABLE Parameter
+(
+  value VARCHAR(50) NOT NULL,
+  name VARCHAR(200) NOT NULL,
+  shortcut VARCHAR(10) NOT NULL,
+  processId INT NOT NULL,
+  FOREIGN KEY (processId) REFERENCES Process(id)
+);
+
+CREATE TABLE MappingResult
+(
+  id INT NOT NULL,
+  queryCoverage NUMERIC(5 2) NOT NULL,
+  originalStrand NUMERIC(5 2) NOT NULL,
+  matches NUMERIC(5 2) NOT NULL,
+  alignLength FLOAT NOT NULL,
+  mappingQuality NUMERIC(5 2) NOT NULL,
+  processId INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (processId) REFERENCES Process(id)
+);
+
+CREATE TABLE AlignmentResult
+(
+  properlyAligned NUMERIC(5 2) NOT NULL,
+  original NUMERIC(5 2) NOT NULL,
+  unmapped NUMERIC(5 2) NOT NULL,
+  secondary NUMERIC(5 2) NOT NULL,
+  suplementary NUMERIC(5 2) NOT NULL,
+  mappingQuality NUMERIC(5 2) NOT NULL,
+  id INT NOT NULL,
+  processId INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (processId) REFERENCES Process(id)
+);
+
