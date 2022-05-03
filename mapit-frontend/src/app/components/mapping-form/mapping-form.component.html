@@ -1,79 +1,123 @@
 <div class="mapping-container">
-  <form>
-    <div class="mapping-container-field">
-      <label>Filter out top FLOAT fraction of repetitive minimizers:    </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 0.0002</mat-label>
-        <input matInput type="number" placeholder="Format: NUM">
-      </mat-form-field>
+  <form [formGroup]="mappingForm">
+
+    <div class="ref-file-container">
+      <label>Please select your reference file:</label>
+      <input type="file" class="file-input" (change)="onRefFileSelected($event)" #refFileUpload>
+      <div class="file-upload">
+        {{refFileName || "No file uploaded yet."}}
+        <button mat-mini-fab color="primary" class="upload-btn" (click)="refFileUpload.click()">
+          <mat-icon>attach_file</mat-icon>
+        </button>
+      </div>
     </div>
 
-    <div class="mapping-container-field">
-      <label>Stop chain enlongation if there are no minimizers in INT-bp: </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 5000</mat-label>
-        <input matInput type="number" placeholder="Format: NUM">
-      </mat-form-field>
+    <div class="query-file-container">
+      <label>Please select your query file(s):</label>
+      <input type="file" class="file-input" (change)="onQueryFileSelected($event)" multiple #queryFileUpload>
+      <div class="file-upload">
+        {{queryFileName || "No file uploaded yet."}}
+        <button mat-mini-fab color="primary" class="upload-btn" (click)="queryFileUpload.click()">
+          <mat-icon>attach_file</mat-icon>
+        </button>
+      </div>
     </div>
 
-    <div class="mapping-container-field">
-      <label>Max intron length: </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 200k</mat-label>
-        <input matInput placeholder="Format: NUM">
-      </mat-form-field>
+    <hr>
+    <br>
+
+    <div class="preset-container">
+      <div class="mapping-param-container-field">
+        <label>Choose preset: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="preset">
+          <mat-select>
+            <mat-option value=null>None</mat-option>
+            <mat-option value="ava-pb">Pac-Bio read overlap</mat-option>
+            <mat-option value="ava-ont">Nanopore read overlap</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
 
-    <div class="mapping-container-field">
-      <label>Max fragment length: </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 800</mat-label>
-        <input matInput type="number" placeholder="Format: NUM">
-      </mat-form-field>
+    <div class="custom-parameters-container">
+      <div class="mapping-container-field">
+        <label>Filter out top FLOAT fraction of repetitive minimizers:</label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="repMin">
+          <mat-label>Default: 0.0002</mat-label>
+          <input matInput type="number" placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Stop chain enlongation if there are no minimizers in INT-bp: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="stopChain">
+          <mat-label>Default: 5000</mat-label>
+          <input matInput type="number" placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Max intron length: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="maxIntron">
+          <mat-label>Default: 200k</mat-label>
+          <input matInput placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Max fragment length: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="maxFrag">
+          <mat-label>Default: 800</mat-label>
+          <input matInput type="number" placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Chaining/alignment bandwidth and long-join bandwidth: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="bandwidths">
+          <mat-label>Default: [500,20000]</mat-label>
+          <input matInput placeholder="Format: NUM,NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Minimal number of minimizers on a chain: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="minNumMin">
+          <mat-label>Default: 3</mat-label>
+          <input matInput type="number" placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Minimal chaining score (matching bases minus log gap penalty): </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="minChainScore">
+          <mat-label>Default: 40</mat-label>
+          <input matInput type="number" placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Min secondary-to-primary score ratio: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="minSecondToPrim">
+          <mat-label>Default: 0.8</mat-label>
+          <input matInput type="number" placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <label>Retain at most INT secondary alignments: </label>
+        <mat-form-field appearance="fill" ngDefaultControl [formControl]="atMostSecond">
+          <mat-label>Default: 5</mat-label>
+          <input matInput type="number" placeholder="Format: NUM">
+        </mat-form-field>
+      </div>
+
+      <div class="mapping-container-field">
+        <mat-checkbox ngDefaultControl [formControl]="skipSelfAndDual">Skip self and dual mappings (for the all-vs-all mode)</mat-checkbox>
+      </div>
     </div>
 
-    <div class="mapping-container-field">
-      <label>Chaining/alignment bandwidth and long-join bandwidth: </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: [500,20000]</mat-label>
-        <input matInput placeholder="Format: NUM,NUM">
-      </mat-form-field>
-    </div>
+    <button mat-flat-button class="mapping-submit-button" type="submit" color="primary">Send</button>
 
-    <div class="mapping-container-field">
-      <label>Minimal number of minimizers on a chain: </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 3</mat-label>
-        <input matInput type="number" placeholder="Format: NUM">
-      </mat-form-field>
-    </div>
-
-    <div class="mapping-container-field">
-      <label>minimal chaining score (matching bases minus log gap penalty): </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 40</mat-label>
-        <input matInput type="number" placeholder="Format: NUM">
-      </mat-form-field>
-    </div>
-
-    <div class="mapping-container-field">
-      <label>Min secondary-to-primary score ratio: </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 0.8</mat-label>
-        <input matInput type="number" placeholder="Format: NUM">
-      </mat-form-field>
-    </div>
-
-    <div class="mapping-container-field">
-      <label>Retain at most INT secondary alignments: </label>
-      <mat-form-field appearance="fill">
-        <mat-label>Default: 5</mat-label>
-        <input matInput type="number" placeholder="Format: NUM">
-      </mat-form-field>
-    </div>
-
-    <div class="mapping-container-field">
-      <mat-checkbox>Skip self and dual mappings (for the all-vs-all mode)</mat-checkbox>
-    </div>
   </form>
 </div>

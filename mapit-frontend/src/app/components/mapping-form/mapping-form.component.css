@@ -23,6 +23,19 @@
   font-size: larger;
 }
 
+.mapping-param-container-field{
+  display: flex;
+  flex-direction: row;
+}
+
+.mapping-param-container-field label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 20px;
+  font-size: larger;
+}
+
 .mapping-container form {
   margin-bottom: 20px;
 }
@@ -33,4 +46,53 @@
 
 .mapping-container .mat-radio-button {
   margin: 0 12px;
+}
+
+.mapping-submit-button {
+  width: 200px;
+  height: 50px;
+  font-size: larger;
+}
+
+.ref-file-container {
+  margin-bottom: 20px !important;
+  font-size: large;
+}
+
+.query-file-container {
+  margin-bottom: 20px !important;
+  font-size: large;
+}
+
+
+.preset-container .mat-form-field {
+  width: auto !important;
+}
+
+.preset-container .mat-select-value {
+  max-width: 100%;
+  width: auto;
+}
+
+.file-input {
+  display: none;
+}
+
+#fileUploadContainer {
+  width: 700px;
+}
+
+#uploadFile {
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 9;
+  opacity: 0;
+  height: 100%;
+  cursor: pointer;
+  position: absolute;
+}
+
+#preset {
+  width: 500px;
 }

@@ -8,7 +8,9 @@ import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
   styleUrls: ['./align-form.component.css'],
 })
 export class AlignFormComponent {
+
   alignForm: FormGroup;
+  preset = new FormControl(null);
   matching = new FormControl(null);
   mismatch = new FormControl(null);
   gapOpen = new FormControl(null);
@@ -18,9 +20,12 @@ export class AlignFormComponent {
   findGTAG = new FormControl(null);
 
   parametersMode: string;
+  queryFileName: string;
+  refFileName: string;
 
   constructor(fb: FormBuilder) {
     this.alignForm = fb.group({
+      preset: this.preset,
       matching: this.matching,
       mismatch: this.mismatch,
       gapOpen: this.gapOpen,
@@ -31,36 +36,26 @@ export class AlignFormComponent {
     });
   }
 
-  // @ViewChild('fileInput') fileInput: ElementRef;
-  // fileAttr = 'Choose File';
-  // uploadFileEvt(file: any) {
-  //   if (file.target.files && file.target.files[0]) {
-  //     if (this.fileAttr == 'Choose File') {
-  //       this.fileAttr = '';
-  //     }
-  //     Array.from(file.target.files).forEach((file: any) => {
-  //       this.fileAttr += file.name + ' - ';
-  //     });
-  //     console.log("Evo filea.");
-  //   } else {
-  //     this.fileAttr = 'Choose File';
-  //   }
-  // }
-  fileName: string;
-  onFileSelected(event: Event) {
+  onRefFileSelected(event: Event) {
+    const file:File = (event.target as HTMLInputElement).files![0];
 
-    // @ts-ignore
-    if (event.target.files[0]) {
-      // @ts-ignore
-      const file:File = event.target.files[0];
-      this.fileName = file.name;
-
-      // const formData = new FormData();
-      //
-      // formData.append("thumbnail", file);
-      // upload$.subscribe();
+    if (file) {
+      this.refFileName = file.name;
     }
+  }
 
+  onQueryFileSelected(event: Event) {
+    const target= event.target as HTMLInputElement;
+    if (target != null) {
+      for (let i = 0; i < target.files!.length; i++) {
+        let file: File = target.files![i];
+        if (this.queryFileName) {
+          this.queryFileName = this.queryFileName.concat(", " + file.name);
+        } else {
+          this.queryFileName = file.name;
+        }
+      }
+    }
   }
 
   console() {
