@@ -1,122 +1,143 @@
-<div class="align-container">
-  <form [formGroup]="alignForm">
+<div class="main-container">
+  <div class="align-container">
+    <p>
+      Here you can run alignment process with any parameters you want. <br/>
+      Make sure that you enter your email first and that all values of parameters are in right format.
+    </p>
+    <form [formGroup]="alignForm">
 
-    <div class="ref-file-container">
-      <label>Please select your reference file:</label>
-      <input type="file" class="file-input" (change)="onRefFileSelected($event)" #refFileUpload>
-      <div class="file-upload">
-        {{refFileName || "No file uploaded yet."}}
-        <button mat-mini-fab color="primary" class="upload-btn" (click)="refFileUpload.click()">
-          <mat-icon>attach_file</mat-icon>
-        </button>
-      </div>
-    </div>
-
-    <div class="query-file-container">
-      <label>Please select your query file(s):</label>
-      <input type="file" class="file-input" (change)="onQueryFileSelected($event)" multiple #queryFileUpload>
-      <div class="file-upload">
-        {{queryFileName || "No file uploaded yet."}}
-        <button mat-mini-fab color="primary" class="upload-btn" (click)="queryFileUpload.click()">
-          <mat-icon>attach_file</mat-icon>
-        </button>
-      </div>
-    </div>
-
-    <hr>
-    <br>
-
-<!--    <div class="choose-container">-->
-<!--      <label>Choose whether you wish to run your process with one of the Minimap2 presets or with your custom parameters.</label>-->
-<!--      <mat-radio-group [(ngModel)]="parametersMode" [ngModelOptions]="{standalone: true}" aria-label="Select an option" color="primary">-->
-<!--        <mat-radio-button value="preset" checked="true" (click)="console()">Preset</mat-radio-button>-->
-<!--        <mat-radio-button value="custom" (click)="console()" >Custom</mat-radio-button>-->
-<!--      </mat-radio-group>-->
-<!--    </div>-->
-
-    <div class="preset-container">
       <div class="align-param-container-field">
-        <label>Choose preset: </label>
-        <mat-form-field appearance="fill" ngDefaultControl [formControl]="preset">
-          <mat-select>
-            <mat-option value=null>None</mat-option>
-            <mat-option value="map-pb">PacBio CLR vs reference mapping</mat-option>
-            <mat-option value="map-ont">Nanopore vs reference mapping</mat-option>
-            <mat-option value="asm5">asm-to-ref mapping, ~0.1% sequence divergence</mat-option>
-            <mat-option value="asm10">asm-to-ref mapping, ~1% sequence divergence</mat-option>
-            <mat-option value="asm20">asm-to-ref mapping, ~5% sequence divergence</mat-option>
-            <mat-option value="splice">Long-read spliced alignment</mat-option>
-            <mat-option value="splice:hq">Pacbio-CCS spliced alignment</mat-option>
-            <mat-option value="sr">Genomic short read mapping</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-
-<!--    <div class="custom-parameters-container" *ngIf="parametersMode==='custom'">-->
-    <div class="custom-parameters-container">
-      <div class="align-param-container-field">
-        <label>Matching score: </label>
-        <mat-form-field ngDefaultControl appearance="fill" [formControl]="matching">
-          <mat-label>Default: 2</mat-label>
-          <input matInput type="number" placeholder="Format: NUM">
+        <label>Enter you email: </label>
+        <mat-form-field appearance="fill">
+          <mat-label>Enter your email</mat-label>
+          <input matInput placeholder="pat@example.com" [formControl]="email" required>
+          <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
         </mat-form-field>
       </div>
 
-      <div class="align-param-container-field">
-        <label>Mismatch penalty: </label>
-        <mat-form-field  ngDefaultControl appearance="fill" [formControl]="mismatch">
-          <mat-label>Default: 4</mat-label>
-          <input matInput type="number" placeholder="Format: NUM">
-        </mat-form-field>
+      <div class="ref-file-container">
+        <label>Please select your reference file:</label>
+        <input type="file" class="file-input" (change)="onRefFileSelected($event)" #refFileUpload>
+        <div class="file-upload">
+          {{refFileName || "No file uploaded yet."}}
+          <button mat-mini-fab color="primary" (click)="refFileUpload.click()">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+        </div>
       </div>
 
-      <div class="align-param-container-field">
-        <label>Gap open penalty: </label>
-        <mat-form-field ngDefaultControl appearance="fill" [formControl]="gapOpen">
-          <mat-label>Default: [4,24]</mat-label>
-          <input matInput placeholder="Format: NUM,NUM">
-        </mat-form-field>
+      <div class="query-file-container">
+        <label>Please select your query file(s):</label>
+        <input type="file" class="file-input" (change)="onQueryFileSelected($event)" multiple #queryFileUpload>
+        <div class="file-upload">
+          {{queryFileName || "No file uploaded yet."}}
+          <button mat-mini-fab color="primary" (click)="queryFileUpload.click()">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+        </div>
       </div>
 
-      <div class="align-param-container-field">
-        <label>Gap extension penalty; a k-long gap costs min {{"{"}}O1+k*E1,O2+k*E2{{"}"}}: </label>
-        <mat-form-field ngDefaultControl appearance="fill" [formControl]="gapExt">
-          <mat-label>Default: [2,1]</mat-label>
-          <input matInput placeholder="Format: NUM,NUM">
-        </mat-form-field>
+      <hr>
+      <br>
+
+  <!--    <div class="choose-container">-->
+  <!--      <label>Choose whether you wish to run your process with one of the Minimap2 presets or with your custom parameters.</label>-->
+  <!--      <mat-radio-group [(ngModel)]="parametersMode" [ngModelOptions]="{standalone: true}" aria-label="Select an option" color="primary">-->
+  <!--        <mat-radio-button value="preset" checked="true" (click)="console()">Preset</mat-radio-button>-->
+  <!--        <mat-radio-button value="custom" (click)="console()" >Custom</mat-radio-button>-->
+  <!--      </mat-radio-group>-->
+  <!--    </div>-->
+
+      <div class="preset-container">
+        <div class="align-param-container-field">
+          <label>Choose preset: </label>
+          <mat-form-field appearance="fill" >
+            <mat-select ngDefaultControl [formControl]="preset">
+              <mat-option value=null>None</mat-option>
+              <mat-option value="map-pb">PacBio CLR vs reference mapping</mat-option>
+              <mat-option value="map-ont">Nanopore vs reference mapping</mat-option>
+              <mat-option value="asm5">asm-to-ref mapping, ~0.1% sequence divergence</mat-option>
+              <mat-option value="asm10">asm-to-ref mapping, ~1% sequence divergence</mat-option>
+              <mat-option value="asm20">asm-to-ref mapping, ~5% sequence divergence</mat-option>
+              <mat-option value="splice">Long-read spliced alignment</mat-option>
+              <mat-option value="splice:hq">Pacbio-CCS spliced alignment</mat-option>
+              <mat-option value="sr">Genomic short read mapping</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
 
-      <div class="align-param-container-field">
-        <label>Z-drop score and inversion Z-drop score: </label>
-        <mat-form-field ngDefaultControl appearance="fill" [formControl]="zDrop">
-          <mat-label>Default: [400,200]</mat-label>
-          <input matInput placeholder="Format: NUM,NUM">
-        </mat-form-field>
+  <!--    <div class="custom-parameters-container" *ngIf="parametersMode==='custom'">-->
+      <div class="custom-parameters-container">
+        <div class="align-param-container-field">
+          <label>Matching score: </label>
+          <mat-form-field ngDefaultControl appearance="fill" [formControl]="matching">
+            <mat-label>Default: 2</mat-label>
+            <input matInput type="number" placeholder="Format: NUM">
+          </mat-form-field>
+        </div>
+
+        <div class="align-param-container-field">
+          <label>Mismatch penalty: </label>
+          <mat-form-field  ngDefaultControl appearance="fill" [formControl]="mismatch">
+            <mat-label>Default: 4</mat-label>
+            <input matInput type="number" placeholder="Format: NUM">
+          </mat-form-field>
+        </div>
+
+        <div class="align-param-container-field">
+          <label>Gap open penalty: </label>
+          <mat-form-field ngDefaultControl appearance="fill" [formControl]="gapOpen">
+            <mat-label>Default: [4,24]</mat-label>
+            <input matInput placeholder="Format: NUM,NUM">
+          </mat-form-field>
+        </div>
+
+        <div class="align-param-container-field">
+          <label>Gap extension penalty; a k-long gap costs min {{"{"}}O1+k*E1,O2+k*E2{{"}"}}: </label>
+          <mat-form-field ngDefaultControl appearance="fill" [formControl]="gapExt">
+            <mat-label>Default: [2,1]</mat-label>
+            <input matInput placeholder="Format: NUM,NUM">
+          </mat-form-field>
+        </div>
+
+        <div class="align-param-container-field">
+          <label>Z-drop score and inversion Z-drop score: </label>
+          <mat-form-field ngDefaultControl appearance="fill" [formControl]="zDrop">
+            <mat-label>Default: [400,200]</mat-label>
+            <input matInput placeholder="Format: NUM,NUM">
+          </mat-form-field>
+        </div>
+
+        <div class="align-param-container-field">
+          <label>Minimal peak DP alignment score: </label>
+          <mat-form-field ngDefaultControl appearance="fill" [formControl]="minPeakDP">
+            <mat-label>Default: 80</mat-label>
+            <input matInput type="number" placeholder="Format: NUM">
+          </mat-form-field>
+        </div>
+
+        <div class="align-param-container-field">
+          <label>How to find GT-AG</label>
+          <mat-form-field appearance="fill" >
+            <mat-label>Default: Don't match GT-AG</mat-label>
+            <mat-select ngDefaultControl [formControl]="findGTAG">
+              <mat-option value="dont">Don't match GT-AG</mat-option>
+              <mat-option value="trans">Transcript strand</mat-option>
+              <mat-option value="both">Both strand</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
 
-      <div class="align-param-container-field">
-        <label>Minimal peak DP alignment score: </label>
-        <mat-form-field ngDefaultControl appearance="fill" [formControl]="minPeakDP">
-          <mat-label>Default: 80</mat-label>
-          <input matInput type="number" placeholder="Format: NUM">
-        </mat-form-field>
-      </div>
+      <button mat-flat-button class="align-submit-button" type="submit" color="primary" (click)="submitAlignForm()">Send</button>
 
-      <div class="align-param-container-field">
-        <label>How to find GT-AG</label>
-        <mat-form-field appearance="fill" ngDefaultControl [formControl]="findGTAG">
-          <mat-label>Default: Don't match GT-AG</mat-label>
-          <mat-select>
-            <mat-option value="dont">Don't match GT-AG</mat-option>
-            <mat-option value="trans">Transcript strand</mat-option>
-            <mat-option value="both">Both strand</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
+    </form>
+  </div>
 
-    <button mat-flat-button class="align-submit-button" type="submit" color="primary">Send</button>
-
-  </form>
+  <div class="animation-container">
+    <app-dna-animation numOfBalls="39"></app-dna-animation>
+  </div>
 </div>
+
+<

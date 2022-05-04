@@ -1,3 +1,18 @@
+p {
+  font-size: 1.5em;
+  margin-bottom: 30px;
+}
+
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.animation-container {
+  margin-right: 150px;
+}
+
 .align-container .mat-form-field + .mat-form-field {
   margin-left: 8px;
 }
@@ -20,7 +35,11 @@
   flex-direction: column;
   justify-content: center;
   margin-right: 20px;
-  font-size: larger;
+  font-size: 1.3em;
+}
+
+.align-param-container-field .first-container {
+  margin-top: 200px;
 }
 
 .align-container form {
@@ -46,11 +65,6 @@ mat-icon {
   height: 30px;
 }
 
-.file-input {
-  display: none;
-}
-
-
 .mat-radio-button ~ .mat-radio-button {
   margin-left: 16px;
 }
@@ -61,13 +75,15 @@ mat-icon {
 }
 
 .ref-file-container {
+  margin-top: 33px !important;
   margin-bottom: 20px !important;
-  font-size: large;
+  font-size: 1.3em;
 }
 
 .query-file-container {
-  margin-bottom: 20px !important;
-  font-size: large;
+  margin-top: 33px !important;
+  margin-bottom: 40px !important;
+  font-size: 1.3em;
 }
 
 .preset-container .mat-form-field {
@@ -77,6 +93,14 @@ mat-icon {
 .preset-container .mat-select-value {
   max-width: 100%;
   width: auto;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-upload button {
+  margin-left: 15px;
 }
 
 #fileUploadContainer {

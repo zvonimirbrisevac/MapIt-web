@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ServiceService} from "../../services/service.service";
 
 @Component({
   selector: 'app-mapping-form',
@@ -9,6 +10,9 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 export class MappingFormComponent implements OnInit {
 
   mappingForm: FormGroup;
+  email = new FormControl(null, [Validators.required, Validators.email]);
+  referenceFile = new FormControl(null);
+  queryFiles = new FormArray([]);
   preset = new FormControl(null);
   repMin = new FormControl(null);
   stopChain = new FormControl(null);
@@ -24,8 +28,13 @@ export class MappingFormComponent implements OnInit {
   queryFileName: string;
   refFileName: string;
 
-  constructor(fb: FormBuilder) {
-    this.mappingForm = fb.group({
+  constructor(private fb: FormBuilder, private service: ServiceService) {}
+
+  ngOnInit(): void {
+    this.mappingForm = this.fb.group({
+        email: this.email,
+        referenceFile: this.referenceFile,
+        queryFiles: this.queryFiles,
         preset: this.preset,
         repMin: this.repMin,
         stopChain: this.stopChain,
@@ -46,6 +55,8 @@ export class MappingFormComponent implements OnInit {
 
     if (file) {
       this.refFileName = file.name;
+      this.referenceFile.setValue(file);
+      console.log(this.referenceFile.value);
     }
   }
 
@@ -54,16 +65,50 @@ export class MappingFormComponent implements OnInit {
     if (target != null) {
       for (let i = 0; i < target.files!.length; i++) {
         let file: File = target.files![i];
+        this.queryFiles.push(new FormControl(file));
         if (this.queryFileName) {
           this.queryFileName = this.queryFileName.concat(", " + file.name);
         } else {
           this.queryFileName = file.name;
         }
       }
+      console.log(this.queryFiles.value)
+      console.log(this.referenceFile.value);
     }
   }
 
-  ngOnInit(): void {
+  getErrorMessage() {
+    if (this.email.hasError('required')) {
+      return 'You must enter a value';
+    }
+
+    return this.email.hasError('email') ? 'Not a valid email' : '';
   }
+
+  submitMappingForm() {
+    const formData = new FormData();
+
+    formData.append('email', this.mappingForm.get('email')?.value)
+    formData.append('referenceFile', this.mappingForm.get('referenceFile')?.value);
+    formData.append('queryFiles', this.mappingForm.get('queryFiles')?.value);
+    formData.append('preset', this.mappingForm.get('preset')?.value);
+    formData.append('repMin', this.mappingForm.get('repMin')?.value);
+    formData.append('stopChain', this.mappingForm.get('stopChain')?.value);
+    formData.append('maxIntron', this.mappingForm.get('maxIntron')?.value);
+    formData.append('maxFrag', this.mappingForm.get('maxFrag')?.value);
+    formData.append('bandwidths', this.mappingForm.get('bandwidths')?.value);
+    formData.append('minNumMin', this.mappingForm.get('minNumMin')?.value);
+    formData.append('minChainScore', this.mappingForm.get('minChainScore')?.value);
+    formData.append('minSecondToPrim', this.mappingForm.get('minSecondToPrim')?.value);
+    formData.append('atMostSecond', this.mappingForm.get('atMostSecond')?.value);
+    formData.append('skipSelfAndDual', this.mappingForm.get('skipSelfAndDual')?.value);
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0]+ ', ' + pair[1]);
+    }
+    this.service.sendMappingForm(formData).subscribe();
+  }
+
+
 
 }

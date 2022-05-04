@@ -1,0 +1,19 @@
+* {
+  margin-left: 10px
+}
+
+p {
+  font-size: 1.3em;
+  margin-right: 400px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.animation-container {
+  margin-right: 150px;
+}
+
+

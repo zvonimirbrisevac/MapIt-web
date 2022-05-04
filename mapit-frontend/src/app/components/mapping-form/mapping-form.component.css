@@ -1,3 +1,18 @@
+p {
+  font-size: 1.5em;
+  margin-bottom: 30px;
+}
+
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.animation-container {
+  margin-right: 150px;
+}
+
 .mapping-container .mat-form-field + .mat-form-field {
   margin-left: 8px;
 }
@@ -20,7 +35,7 @@
   flex-direction: column;
   justify-content: center;
   margin-right: 20px;
-  font-size: larger;
+  font-size: 1.3em;
 }
 
 .mapping-param-container-field{
@@ -33,7 +48,7 @@
   flex-direction: column;
   justify-content: center;
   margin-right: 20px;
-  font-size: larger;
+  font-size: 1.3em;
 }
 
 .mapping-container form {
@@ -54,14 +69,20 @@
   font-size: larger;
 }
 
+.custom-parameters-container {
+  margin-bottom: 30px;
+}
+
 .ref-file-container {
+  margin-top: 33px !important;
   margin-bottom: 20px !important;
-  font-size: large;
+  font-size: 1.3em;
 }
 
 .query-file-container {
-  margin-bottom: 20px !important;
-  font-size: large;
+  margin-top: 33px !important;
+  margin-bottom: 40px !important;
+  font-size: 1.3em;
 }
 
 
@@ -76,6 +97,10 @@
 
 .file-input {
   display: none;
+}
+
+.file-upload button {
+  margin-left: 15px;
 }
 
 #fileUploadContainer {
