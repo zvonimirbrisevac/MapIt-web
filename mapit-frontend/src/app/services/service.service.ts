@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'multipart/data-form',
+    // 'Access-Control-Allow-Origin': *,
   }),
 };
 
@@ -13,16 +14,24 @@ const httpOptions = {
 })
 export class ServiceService {
 
-  private alignApiUrl = 'http://localhost:3000/align';
-  private mappingApiUrl = 'http://localhost:3000/mapping'
+  private alignApiUrl = '/api/align';
+  private mappingApiUrl = '/api/mapping'
 
 
   constructor(private http: HttpClient) {
   }
 
-  sendAlignForm(form: FormData): Observable<FormData> {
+  // sendAlignForm(form: FormData): Observable<FormData> {
+  //   console.log("idem slattt")
+  //   return this.http.post<FormData>(this.alignApiUrl, form, httpOptions);
+  // }
+
+  sendAlignForm(form: FormData) {//, refFile: File, queryFiles: File[]): Observable<any> {
     console.log("idem slattt")
-    return this.http.post<FormData>(this.alignApiUrl, form, httpOptions);
+    // const params = new HttpParams()
+    //   .append('refFile', refFile)
+    //   .append('param2', 'some data 2');
+    return this.http.post<any>(this.alignApiUrl, form)//, httpOptions);
   }
 
   sendMappingForm(form: FormData): Observable<FormData> {

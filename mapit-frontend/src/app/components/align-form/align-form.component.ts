@@ -1,6 +1,7 @@
 import {Component, ViewChild, ElementRef, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ServiceService} from "../../services/service.service";
+import {AlignParameters} from "../../classes/AlignParameters";
 
 /** @title Form field with label */
 @Component({
@@ -83,21 +84,57 @@ export class AlignFormComponent implements OnInit{
   submitAlignForm() {
     const formData = new FormData();
 
-    formData.append('email', this.alignForm.get('email')?.value)
+    // let queryFiles = [];
+    // for (let control in (this.alignForm.get('queryFiles') as FormArray).controls) {
+    //     queryFiles.push((control as unknown as FormControl).value);
+    // }
+
+    // console.log('>>>>>>>>>> query files length: ' + queryFiles.length);
+    // console.log('>>>>>>>>>>>>>>>> idu query fileovi');
+    // for (let i = 0; i < this.alignForm.get('queryFiles')?.value.length; i++) {
+    //   console.log(this.alignForm.get('queryFiles')?.value[i]);
+    // }
+    // //queryFiles.forEach(x => console.log(x + " ,"))
+    //
+    //
+    // console.log('>>>>>>>>>>>>>>>>>> this.alignForm.get(\'queryFiles\')?.value: ')
+
+    console.log(this.alignForm.get('queryFiles')?.value);
+
+    let alignParam: AlignParameters = new AlignParameters(
+      this.alignForm.get('email')?.value,
+      this.alignForm.get('preset')?.value,
+      this.alignForm.get('matching')?.value,
+      this.alignForm.get('mismatch')?.value,
+      this.alignForm.get('gapOpen')?.value,
+      this.alignForm.get('gapExt')?.value,
+      this.alignForm.get('zDrop')?.value,
+      this.alignForm.get('minPeakDP')?.value,
+      this.alignForm.get('findGTAG')?.value
+    )
+
+    // formData.append('email', this.alignForm.get('email')?.value);
+    formData.append('parameters', new Blob([JSON.stringify(alignParam)], {
+      type: 'application/json'
+    }));
     formData.append('referenceFile', this.alignForm.get('referenceFile')?.value);
-    formData.append('queryFiles', this.alignForm.get('queryFiles')?.value);
-    formData.append('preset', this.alignForm.get('preset')?.value);
-    formData.append('matching', this.alignForm.get('matching')?.value);
-    formData.append('mismatch', this.alignForm.get('mismatch')?.value);
-    formData.append('gapOpen', this.alignForm.get('gapOpen')?.value);
-    formData.append('gapExt', this.alignForm.get('gapExt')?.value);
-    formData.append('zDrop', this.alignForm.get('zDrop')?.value);
-    formData.append('minPeakDP', this.alignForm.get('minPeakDP')?.value);
-    formData.append('findGTAG', this.alignForm.get('findGTAG')?.value);
+    for(let i = 0; i < this.alignForm.get('queryFiles')?.value.length; i++){
+      formData.append("queryFiles", this.alignForm.get('queryFiles')?.value[i]);
+    }
+    // formData.append('preset', this.alignForm.get('preset')?.value);
+    // formData.append('matching', this.alignForm.get('matching')?.value);
+    // formData.append('mismatch', this.alignForm.get('mismatch')?.value);
+    // formData.append('gapOpen', this.alignForm.get('gapOpen')?.value);
+    // formData.append('gapExt', this.alignForm.get('gapExt')?.value);
+    // formData.append('zDrop', this.alignForm.get('zDrop')?.value);
+    // formData.append('minPeakDP', this.alignForm.get('minPeakDP')?.value);
+    // formData.append('findGTAG', this.alignForm.get('findGTAG')?.value);
     for (let pair of formData.entries()) {
       console.log(pair[0]+ ', ' + pair[1]);
     }
-    this.service.sendAlignForm(formData).subscribe();
+    this.service
+      .sendAlignForm(formData)//, this.alignForm.get('referenceFile')?.value, null)
+      .subscribe(res => console.log(res));
   }
 
 

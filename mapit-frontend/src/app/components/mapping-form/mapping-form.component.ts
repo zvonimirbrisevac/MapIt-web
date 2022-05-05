@@ -77,14 +77,6 @@ export class MappingFormComponent implements OnInit {
     }
   }
 
-  getErrorMessage() {
-    if (this.email.hasError('required')) {
-      return 'You must enter a value';
-    }
-
-    return this.email.hasError('email') ? 'Not a valid email' : '';
-  }
-
   submitMappingForm() {
     const formData = new FormData();
 
@@ -110,5 +102,19 @@ export class MappingFormComponent implements OnInit {
   }
 
 
+  getRefFileErrorMessage() {
+    return 'You must upload reference file';
+  }
 
+  getEmailErrorMessage() {
+    if (this.email.hasError('required')) {
+      return 'You must enter a value';
+    }
+
+    return this.email.hasError('email') ? 'Not a valid email' : '';
+  }
+
+  getQueryFilesErrorMessage() {
+    return 'You must upload at least one query file';
+  }
 }

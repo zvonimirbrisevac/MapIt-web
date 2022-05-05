@@ -12,30 +12,32 @@
         <mat-form-field appearance="fill">
           <mat-label>Enter your email</mat-label>
           <input matInput placeholder="pat@example.com" [formControl]="email" required>
-          <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+          <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
         </mat-form-field>
       </div>
 
       <div class="ref-file-container">
         <label>Please select your reference file:</label>
-        <input type="file" class="file-input" (change)="onRefFileSelected($event)" #refFileUpload>
+        <input type="file" class="file-input" (change)="onRefFileSelected($event)" #refFileUpload required>
         <div class="file-upload">
           {{refFileName || "No file uploaded yet."}}
           <button mat-mini-fab color="primary" class="upload-btn" (click)="refFileUpload.click()">
             <mat-icon>attach_file</mat-icon>
           </button>
         </div>
+        <mat-error *ngIf="referenceFile.value == null">{{getRefFileErrorMessage()}}</mat-error>
       </div>
 
       <div class="query-file-container">
         <label>Please select your query file(s):</label>
-        <input type="file" class="file-input" (change)="onQueryFileSelected($event)" multiple #queryFileUpload>
+        <input type="file" class="file-input" (change)="onQueryFileSelected($event)" multiple #queryFileUpload required>
         <div class="file-upload">
           {{queryFileName || "No file uploaded yet."}}
           <button mat-mini-fab color="primary" class="upload-btn" (click)="queryFileUpload.click()">
             <mat-icon>attach_file</mat-icon>
           </button>
         </div>
+        <mat-error *ngIf="queryFiles.controls.length == 0">{{getQueryFilesErrorMessage()}}</mat-error>
       </div>
 
       <hr>
