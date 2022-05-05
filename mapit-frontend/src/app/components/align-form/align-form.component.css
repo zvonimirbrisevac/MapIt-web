@@ -3,6 +3,36 @@ p {
   margin-bottom: 30px;
 }
 
+.align-container hr {
+  height: 20px;
+}
+
+.progress-bar {
+  padding: 0;
+  height: 50px;
+}
+.progress {
+  width: 50px;
+  height: 40px;
+  background: transparent;
+}
+
+.progress span {
+  margin-left: 15px;
+}
+
+mat-progress-bar {
+  margin-right: 20px;
+}
+
+.mat-toolbar-single-row {
+  height: auto !important;
+  background: transparent;
+  padding: 0;
+  border-bottom: none;
+  justify-content: space-between;
+}
+
 .main-container {
   display: flex;
   justify-content: space-between;

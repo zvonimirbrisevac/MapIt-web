@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <hr>
+      <hr/>
       <br>
 
   <!--    <div class="choose-container">-->
@@ -132,6 +132,10 @@
 
       <button mat-flat-button class="align-submit-button" type="submit" color="primary" (click)="submitAlignForm()">Send</button>
 
+      <mat-toolbar *ngIf="uploadProgress > 0" class="progress-bar">
+        <mat-progress-bar color="primary" [value]="uploadProgress"></mat-progress-bar>
+        <span class="progress">{{ uploadProgress }}%</span>
+      </mat-toolbar>
     </form>
   </div>
 
@@ -140,4 +144,3 @@
   </div>
 </div>
 
-<
