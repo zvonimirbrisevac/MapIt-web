@@ -12,7 +12,6 @@ import seminar.mapit.dto.process.AlignProcessDTO;
 import seminar.mapit.services.ProcessService;
 
 @Controller
-@RequestMapping(value = "/process")
 public class ProcessController {
 
     private final static Logger logger = LoggerFactory.getLogger(ProcessController.class);
@@ -36,6 +35,8 @@ public class ProcessController {
             logger.info(String.valueOf(file.getSize()));
         }
         logger.info(parameters.getEmail());
+
+        processService.startAlignProcess(parameters, referenceFile, queryFiles);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 }

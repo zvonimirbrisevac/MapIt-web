@@ -20,13 +20,4 @@ public class MapitApplication {
 		SpringApplication.run(MapitApplication.class, args);
 	}
 
-//	@Bean
-//	public WebMvcConfigurer corsConfigurer() {
-//		return new WebMvcConfigurer() {
-//			@Override
-//			public void addCorsMappings(CorsRegistry registry) {
-//				registry.addMapping("/align").allowedOrigins("http://localhost:4200");
-//			}
-//		};
-//	}
 }

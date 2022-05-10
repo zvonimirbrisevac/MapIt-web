@@ -6,8 +6,8 @@ public class AlignProcessDTO {
 
     private String email;
     private String preset;
-    private int matching;
-    private int mismatch;
+    private Integer matching;
+    private Integer mismatch;
     private String gapOpen;
     private String gapExt;
     private String zDrop;
@@ -33,5 +33,37 @@ public class AlignProcessDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPreset() {
+        return preset;
+    }
+
+    public Integer getMatching() {
+        return matching;
+    }
+
+    public Integer getMismatch() {
+        return mismatch;
+    }
+
+    public String getGapOpen() {
+        return gapOpen;
+    }
+
+    public String getGapExt() {
+        return gapExt;
+    }
+
+    public String getzDrop() {
+        return zDrop;
+    }
+
+    public String getMinPeakDP() {
+        return minPeakDP;
+    }
+
+    public String getFindGTAG() {
+        return findGTAG;
     }
 }
