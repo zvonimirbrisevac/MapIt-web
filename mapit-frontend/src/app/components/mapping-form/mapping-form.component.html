@@ -77,7 +77,7 @@
           <label>Max intron length: </label>
           <mat-form-field appearance="fill" ngDefaultControl [formControl]="maxIntron">
             <mat-label>Default: 200k</mat-label>
-            <input matInput placeholder="Format: NUM">
+            <input matInput type="number" placeholder="Format: NUM">
           </mat-form-field>
         </div>
 
@@ -137,6 +137,11 @@
       <div class="send-button-container">
         <button mat-flat-button class="mapping-submit-button" type="submit" color="primary" (click)="submitMappingForm()">Send</button>
       </div>
+
+      <mat-toolbar *ngIf="uploadProgress > 0" class="progress-bar">
+        <mat-progress-bar color="primary" [value]="uploadProgress"></mat-progress-bar>
+        <span class="progress">{{ uploadProgress }}%</span>
+      </mat-toolbar>
     </form>
   </div>
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import seminar.mapit.dto.process.AlignProcessDTO;
+import seminar.mapit.dto.process.MappingProcessDTO;
 import seminar.mapit.services.ProcessService;
 
 @Controller
@@ -28,15 +29,18 @@ public class ProcessController {
                                              @RequestPart AlignProcessDTO parameters) {
         logger.info("Processing new alignment process...");
 
-        logger.info(referenceFile.getOriginalFilename());
-        logger.info(String.valueOf(referenceFile.getSize()));
-        for (MultipartFile file: queryFiles) {
-            logger.info(file.getOriginalFilename());
-            logger.info(String.valueOf(file.getSize()));
-        }
-        logger.info(parameters.getEmail());
-
         processService.startAlignProcess(parameters, referenceFile, queryFiles);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/mapping", consumes = { MediaType.APPLICATION_OCTET_STREAM_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE })//, consumes = "multipart/form-data")
+    public ResponseEntity createMappingProcess(@RequestParam MultipartFile referenceFile,
+                                             @RequestParam MultipartFile[] queryFiles,
+                                             @RequestPart MappingProcessDTO parameters) {
+        logger.info("Processing new mapping process...");
+
+        processService.startMappingProcess(parameters, referenceFile, queryFiles);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 }

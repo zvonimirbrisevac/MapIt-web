@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ServiceService} from "../../services/service.service";
+import {MappingParameters} from "../../classes/MappingParameters";
+import {HttpEventType, HttpResponse, HttpStatusCode} from "@angular/common/http";
 
 @Component({
   selector: 'app-mapping-form',
@@ -27,6 +29,7 @@ export class MappingFormComponent implements OnInit {
 
   queryFileName: string;
   refFileName: string;
+  uploadProgress: number;
 
   constructor(private fb: FormBuilder, private service: ServiceService) {}
 
@@ -80,25 +83,48 @@ export class MappingFormComponent implements OnInit {
   submitMappingForm() {
     const formData = new FormData();
 
-    formData.append('email', this.mappingForm.get('email')?.value)
-    formData.append('referenceFile', this.mappingForm.get('referenceFile')?.value);
-    formData.append('queryFiles', this.mappingForm.get('queryFiles')?.value);
-    formData.append('preset', this.mappingForm.get('preset')?.value);
-    formData.append('repMin', this.mappingForm.get('repMin')?.value);
-    formData.append('stopChain', this.mappingForm.get('stopChain')?.value);
-    formData.append('maxIntron', this.mappingForm.get('maxIntron')?.value);
-    formData.append('maxFrag', this.mappingForm.get('maxFrag')?.value);
-    formData.append('bandwidths', this.mappingForm.get('bandwidths')?.value);
-    formData.append('minNumMin', this.mappingForm.get('minNumMin')?.value);
-    formData.append('minChainScore', this.mappingForm.get('minChainScore')?.value);
-    formData.append('minSecondToPrim', this.mappingForm.get('minSecondToPrim')?.value);
-    formData.append('atMostSecond', this.mappingForm.get('atMostSecond')?.value);
-    formData.append('skipSelfAndDual', this.mappingForm.get('skipSelfAndDual')?.value);
+    let mappingParam: MappingParameters = new MappingParameters(
+      this.mappingForm.get('email')?.value,
+      this.mappingForm.get('preset')?.value,
+      this.mappingForm.get('repMin')?.value,
+      this.mappingForm.get('stopChain')?.value,
+      this.mappingForm.get('maxIntron')?.value,
+      this.mappingForm.get('maxFrag')?.value,
+      this.mappingForm.get('bandwidths')?.value,
+      this.mappingForm.get('minNumMin')?.value,
+      this.mappingForm.get('minChainScore')?.value,
+      this.mappingForm.get('minSecondToPrim')?.value,
+      this.mappingForm.get('atMostSecond')?.value,
+      this.mappingForm.get('skipSelfAndDual')?.value,
+    )
 
-    for (let pair of formData.entries()) {
-      console.log(pair[0]+ ', ' + pair[1]);
+    formData.append('parameters', new Blob([JSON.stringify(mappingParam)], {
+      type: 'application/json'
+    }));
+    formData.append('referenceFile', this.mappingForm.get('referenceFile')?.value);
+    for (let i = 0; i < this.mappingForm.get('queryFiles')?.value.length; i++) {
+      formData.append("queryFiles", this.mappingForm.get('queryFiles')?.value[i]);
     }
-    this.service.sendMappingForm(formData).subscribe();
+
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0]+ ', ' + pair[1]);
+    // }
+    this.service.sendMappingForm(formData)
+      .subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.uploadProgress = Math.round(100 * event.loaded / event.total);
+        } else if (event instanceof HttpResponse) {
+          if (event.status == HttpStatusCode.Created) {
+            console.log(event);
+            this.uploadProgress = 0;
+          }
+        }
+      },
+      error => {
+        console.log(error);
+        this.uploadProgress = 0;
+      });
   }
 
 

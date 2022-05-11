@@ -29,8 +29,7 @@ export class AlignFormComponent implements OnInit {
   refFileName: string;
   uploadProgress: number;
 
-  constructor(private fb: FormBuilder, private service: ServiceService) {
-  }
+  constructor(private fb: FormBuilder, private service: ServiceService) {}
 
   ngOnInit(): void {
     this.alignForm = this.fb.group({
@@ -54,7 +53,6 @@ export class AlignFormComponent implements OnInit {
     if (file) {
       this.refFileName = file.name;
       this.referenceFile.setValue(file);
-      console.log(this.referenceFile.value);
     }
   }
 
@@ -70,9 +68,6 @@ export class AlignFormComponent implements OnInit {
           this.queryFileName = file.name;
         }
       }
-      console.log(this.queryFiles.value)
-      console.log(this.referenceFile.value);
-
     }
   }
 

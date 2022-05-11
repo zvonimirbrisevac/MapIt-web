@@ -3,6 +3,7 @@ package seminar.mapit.services;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import seminar.mapit.dto.process.AlignProcessDTO;
+import seminar.mapit.dto.process.MappingProcessDTO;
 
 import javax.swing.*;
 import java.io.*;
@@ -26,6 +27,19 @@ public class ProcessService {
         put("minPeakDP", "-s");
         put("findGTAG", "-u");
     }} ;
+    private final static HashMap<String, String> mappingParamsShorts = new HashMap<>() {{
+        put("preset", "-x");
+        put("repMin", "-f");
+        put("stopChain", "-g");
+        put("maxIntron", "-G");
+        put("maxFrag", "-F");
+        put("bandwidths", "-r");
+        put("minNumMin", "-n");
+        put("minChainScore", "-m");
+        put("minSecondToPrim", "-p");
+        put("atMostSecond", "-N");
+        put("skipSelfAndDual", "-X");
+    }} ;
 
     private static final String refFilesPath = "all_processes/ref_files";
     private static final String queryFilesPath = "all_processes/query_files";
@@ -39,10 +53,8 @@ public class ProcessService {
         }
     }
 
-    public boolean startAlignProcess(AlignProcessDTO params, MultipartFile refFile, MultipartFile[] queryFiles) {
-
+    public void startAlignProcess(AlignProcessDTO params, MultipartFile refFile, MultipartFile[] queryFiles) {
         createDirectories();
-        String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss-SSS"));
 
         List<String> processRunnerCommands = new ArrayList<>();
 
@@ -58,28 +70,7 @@ public class ProcessService {
             processRunnerCommands.add("-a");
         }
 
-        String refFileName = refFile.getOriginalFilename();
-        File localRefFile = new File(refFilesPath + "/" + localDateTime + "_" + refFileName);
-        try {
-            OutputStream os = new FileOutputStream(localRefFile);
-            os.write(refFile.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        processRunnerCommands.add(localRefFile.getAbsolutePath());
-        List<String> queryPaths = new ArrayList<>();
-        for (MultipartFile queryFile: queryFiles) {
-            String queryFileName = queryFile.getOriginalFilename();
-            File localQueryFile = new File(queryFilesPath + "/" + localDateTime + "_" + queryFileName);
-            try {
-                OutputStream os = new FileOutputStream(localQueryFile);
-                os.write(queryFile.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            processRunnerCommands.add(localQueryFile.getAbsolutePath());
-        }
-
+        createFiles(refFile, queryFiles, processRunnerCommands);
 
         List<String> paramsCommands = new ArrayList<>();
 
@@ -116,6 +107,102 @@ public class ProcessService {
         processRunnerCommands.add(params.getEmail());
         processRunnerCommands.add("ALIGN");
 
+        startProcessRunner(processRunnerCommands);
+    }
+
+
+    public void startMappingProcess(MappingProcessDTO params, MultipartFile refFile, MultipartFile[] queryFiles) {
+        createDirectories();
+
+        List<String> processRunnerCommands = new ArrayList<>();
+
+        processRunnerCommands.add("java");
+        processRunnerCommands.add("-cp");
+        processRunnerCommands.add("target/classes");
+        processRunnerCommands.add("seminar.process_runner.ProcessRunner");
+
+        if (params.getPreset() != null) {
+            processRunnerCommands.add(mappingParamsShorts.get("preset"));
+            processRunnerCommands.add(params.getPreset());
+        }
+
+        createFiles(refFile, queryFiles, processRunnerCommands);
+
+        List<String> paramsCommands = new ArrayList<>();
+
+        if (params.getRepMin() != null) {
+            paramsCommands.add(mappingParamsShorts.get("repMin"));
+            paramsCommands.add(params.getRepMin().toString());
+        }
+        if (params.getStopChain() != null) {
+            paramsCommands.add(mappingParamsShorts.get("stopChain"));
+            paramsCommands.add(params.getStopChain().toString());
+        }
+        if (params.getMaxIntron() != null) {
+            paramsCommands.add(mappingParamsShorts.get("maxIntron"));
+            paramsCommands.add(params.getMaxIntron().toString());
+        }
+        if (params.getMaxFrag() != null) {
+            paramsCommands.add(mappingParamsShorts.get("maxFrag"));
+            paramsCommands.add(params.getMaxFrag().toString());
+        }
+        if (params.getBandwidths() != null) {
+            paramsCommands.add(mappingParamsShorts.get("bandwidths"));
+            paramsCommands.add(params.getBandwidths());
+        }
+        if (params.getMinNumMin() != null) {
+            paramsCommands.add(mappingParamsShorts.get("minNumMin"));
+            paramsCommands.add(params.getMinNumMin().toString());
+        }
+        if (params.getMinChainScore() != null) {
+            paramsCommands.add(mappingParamsShorts.get("minChainScore"));
+            paramsCommands.add(params.getMinChainScore().toString());
+        }
+        if (params.getMinSecondToPrim() != null) {
+            paramsCommands.add(mappingParamsShorts.get("minSecondToPrim"));
+            paramsCommands.add(params.getMinSecondToPrim().toString());
+        }
+        if (params.getAtMostSecond() != null) {
+            paramsCommands.add(mappingParamsShorts.get("atMostSecond"));
+            paramsCommands.add(params.getAtMostSecond().toString());
+        }
+        if (params.getSkipSelfAndDual() != null) {
+            paramsCommands.add(mappingParamsShorts.get("skipSelfAndDual"));
+        }
+
+        processRunnerCommands.addAll(paramsCommands);
+        processRunnerCommands.add(params.getEmail());
+        processRunnerCommands.add("MAPPING");
+
+        startProcessRunner(processRunnerCommands);
+
+    }
+
+    private void createFiles(MultipartFile refFile, MultipartFile[] queryFiles, List<String> processRunnerCommands) {
+        String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss-SSS"));
+        String refFileName = refFile.getOriginalFilename();
+        File localRefFile = new File(refFilesPath + "/" + localDateTime + "_" + refFileName);
+        try {
+            OutputStream os = new FileOutputStream(localRefFile);
+            os.write(refFile.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        processRunnerCommands.add(localRefFile.getAbsolutePath());
+        for (MultipartFile queryFile: queryFiles) {
+            String queryFileName = queryFile.getOriginalFilename();
+            File localQueryFile = new File(queryFilesPath + "/" + localDateTime + "_" + queryFileName);
+            try {
+                OutputStream os = new FileOutputStream(localQueryFile);
+                os.write(queryFile.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            processRunnerCommands.add(localQueryFile.getAbsolutePath());
+        }
+    }
+
+    private void startProcessRunner(List<String> processRunnerCommands) {
         System.out.println("Line that will be executed:");
         for (String s: processRunnerCommands) {
             System.out.print(s + " ");
@@ -126,7 +213,6 @@ public class ProcessService {
             Process process = pb.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder builder = new StringBuilder();
             String line = null;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
@@ -141,9 +227,5 @@ public class ProcessService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-        return true;
     }
-
-
 }
