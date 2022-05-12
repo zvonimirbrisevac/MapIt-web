@@ -1,5 +1,10 @@
 package seminar.process_runner;
 
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -13,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 public class ProcessRunner {
 
@@ -20,6 +26,11 @@ public class ProcessRunner {
     private static final String mappingOutputFilesPath = "output_files/paf_files";
     private static final String processesStreamsPath = "processes_streams";
     private static final String minimap2Path = "/home/zvonimir/Desktop/minimap2/minimap2";
+
+    private static final String host = "";
+    private static final int port = 0;
+    private static String userName = "";
+    private static String password = "";
 
     public static void createDirectories() {
         try {
@@ -54,11 +65,13 @@ public class ProcessRunner {
             folder = new File(alignOutputFilesPath);
         }
 
-        String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss-SSS"));
+        String localDateTimeStart = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss-SSS"));
+        String localDateTimeStartNiceFormat = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
         File[] listOfFiles = folder.listFiles();
         int id = listOfFiles.length + 1;
-        File outputFile = new File(folder + "/" + type + "_" + id + "_" + localDateTime + ext);
-        File errorFile = new File(processesStreamsPath + "/" + type + "_" + id + "_" + localDateTime
+        File outputFile = new File(folder + "/" + type + "_" + id + "_" + localDateTimeStart + ext);
+        File errorFile = new File(processesStreamsPath + "/" + type + "_" + id + "_" + localDateTimeStart
                 + "_stream.log");
         try {
             errorFile.createNewFile();
@@ -92,14 +105,47 @@ public class ProcessRunner {
         }
 
         String localDateTimeEnd = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss-SSS"));
+        String localDateTimeEndNiceFormat = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
         if (status == 0) {
-            System.out.println("Succesfully finished minimap2 process");
+            System.out.println("Successfully finished minimap2 process");
             List<String> analysis;
-            if (type == "ALIGN") {
+            if (type.equals("ALIGN")) {
+                System.out.println("About to start sam analysis");
+                analysis = getSamAnalysis(outputFile);
+                System.out.println("Sam analysis finished");
+                StringBuilder sb = new StringBuilder();
+                sb.append("Hello,\n\n");
+                sb.append("We are happy to inform you that your alignment process has successfully finished.\n");
+                sb.append("Here is analysis of your process:\n\n");
+                sb.append("Process start time: " + localDateTimeStartNiceFormat + "\n");
+                sb.append("Process end time: " + localDateTimeEndNiceFormat + "\n");
+                for (String value: analysis) {
+                    sb.append(value + "\n");
+                }
+                sb.append("\n");
+                sb.append("Thank you for using MapIt. :)");
+                System.out.println("About to send mail...");
+                sendEmail(email, "MapIt - alignment process results", sb.toString());
+            } else if (type.equals("MAPPING")) {
+                System.out.println("About to start paf analysis");
                 analysis = getPafAnalysis(outputFile);
-            } else if (type == "MAPPING") {
-                analysis = getMappingAnalysis(outputFile);
+                System.out.println("Sam analysis finished");
+                StringBuilder sb = new StringBuilder();
+                sb.append("Hello,\n\n");
+                sb.append("We are happy to inform you that your mapping process has successfully finished.\n");
+                sb.append("Here is analysis of your process:\n\n");
+                sb.append("Process start time: " + localDateTimeStartNiceFormat + "\n");
+                sb.append("Process end time: " + localDateTimeEndNiceFormat + "\n");
+                for (String value: analysis) {
+                    sb.append(value + "\n");
+                }
+                sb.append("\n");
+                sb.append("Thank you for using MapIt. :)");
+                System.out.println("About to send mail...");
+                sendEmail(email, "MapIt - mapping process results", sb.toString());
             }
+            System.out.println("Email successfully sent!");
         } else {
             /// u slučaju faila
         }
@@ -149,10 +195,18 @@ public class ProcessRunner {
         double averageBlockLength = ((double) totalAlignmentBlockLength) / fileLength;
         double averageMapQuality = ((double) totalMappingQuality) / fileLength;
 
-        return null;
+        List<String> analysis = new ArrayList<>();
+        analysis.add("Average query coverage in alignment blocks: " + df.format(queryCoverage * 100) + "%");
+        analysis.add("Percentage of original relative strands: " + df.format(percOriginalStrands * 100) + "%");
+        analysis.add("Average percentage of matches in alignment block: " +
+                df.format(averageResidueMatches * 100) + "%");
+        analysis.add("Average length of alignment block: " + df.format(averageBlockLength));
+        analysis.add("Average mapping quality (0-255): " + df.format(averageMapQuality));
+
+        return analysis;
     }
 
-    public static List<String> getMappingAnalysis(File outputFile) {
+    public static List<String> getSamAnalysis(File outputFile) {
         long dataSize = 0;
         long totalMapQuality = 0;
         long unmappedSegments = 0;
@@ -211,6 +265,45 @@ public class ProcessRunner {
         double suplementPerc = ((double) suplementaryAligns) / dataSize;
         double averageMapq = ((double) totalMapQuality) / dataSize;
 
-        return null;
+        List<String> analysis = new ArrayList<>();
+        analysis.add("Percentage of properly aligned alignments: " + df.format(properPerc * 100) + "%");
+        analysis.add("Percentage of alignments on original strand: " + df.format(origPerc * 100) + "%");
+        analysis.add("Percentage of alignments with unmapped segment(s): " +
+                df.format(unmappedPerc * 100) + "%");
+        analysis.add("Percentage of secondary alignments: " + df.format(secondPerc * 100) + "%");
+        analysis.add("Percentage of supplementary alignments: " + df.format(suplementPerc * 100) + "%");
+        analysis.add("Average mapping quality of alignments (0-255): " + df.format(averageMapq));
+
+        return analysis;
     }
+
+    private static void sendEmail(String mailTo, String subject, String mailContext) {
+        Properties props = new Properties();
+        props.put("mail.smtp.ssl.enable", "true");
+;
+
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setJavaMailProperties(props);
+        sender.setHost(host);
+        sender.setPort(port);
+        sender.setUsername(userName);
+        sender.setPassword(password);
+
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper;
+        try {
+            helper = new MimeMessageHelper(message, true);
+            helper.setTo(mailTo);
+            helper.setSubject(subject);
+            helper.setText(mailContext);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        sender.send(message);
+        System.out.println("Email sent");
+
+    }
+
+
 }
