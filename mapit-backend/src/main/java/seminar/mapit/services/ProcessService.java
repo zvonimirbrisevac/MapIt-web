@@ -58,19 +58,20 @@ public class ProcessService {
 
         List<String> processRunnerCommands = new ArrayList<>();
 
-        processRunnerCommands.add("java");
-        processRunnerCommands.add("-cp");
-        processRunnerCommands.add("target/classes");
-        processRunnerCommands.add("seminar.process_runner.ProcessRunner");
+        processRunnerCommands.add("mvn");
+        processRunnerCommands.add("exec:java");
+        processRunnerCommands.add("-Dexec.mainClass=seminar.process_runner.ProcessRunner");
+
+        List<String> processRunnerArguments = new ArrayList<>();
 
         if (params.getPreset() != null) {
-            processRunnerCommands.add(alignParamsShorts.get("preset"));
-            processRunnerCommands.add(params.getPreset());
+            processRunnerArguments.add(alignParamsShorts.get("preset"));
+            processRunnerArguments.add(params.getPreset());
         } else {
-            processRunnerCommands.add("-a");
+            processRunnerArguments.add("-a");
         }
 
-        createFiles(refFile, queryFiles, processRunnerCommands);
+        createFiles(refFile, queryFiles, processRunnerArguments);
 
         List<String> paramsCommands = new ArrayList<>();
 
@@ -103,9 +104,21 @@ public class ProcessService {
             paramsCommands.add(params.getFindGTAG());
         }
 
-        processRunnerCommands.addAll(paramsCommands);
-        processRunnerCommands.add(params.getEmail());
-        processRunnerCommands.add("ALIGN");
+        processRunnerArguments.addAll(paramsCommands);
+        processRunnerArguments.add(params.getEmail());
+        processRunnerArguments.add("ALIGN");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("-Dexec.args=");
+        for (int i = 0; i < processRunnerArguments.size(); i++) {
+            if (i < processRunnerArguments.size() - 1) {
+                sb.append(processRunnerArguments.get(i) + " ");
+            } else {
+                sb.append(processRunnerArguments.get(i));
+            }
+        }
+
+        processRunnerCommands.add(sb.toString());
 
         startProcessRunner(processRunnerCommands);
     }
@@ -116,17 +129,17 @@ public class ProcessService {
 
         List<String> processRunnerCommands = new ArrayList<>();
 
-        processRunnerCommands.add("java");
-        processRunnerCommands.add("-cp");
-        processRunnerCommands.add("target/classes");
-        processRunnerCommands.add("seminar.process_runner.ProcessRunner");
+        processRunnerCommands.add("mvn");
+        processRunnerCommands.add("exec:java");
+        processRunnerCommands.add("-Dexec.mainClass=seminar.process_runner.ProcessRunner");
 
+        List<String> processRunnerArguments = new ArrayList<>();
         if (params.getPreset() != null) {
-            processRunnerCommands.add(mappingParamsShorts.get("preset"));
-            processRunnerCommands.add(params.getPreset());
+            processRunnerArguments.add(mappingParamsShorts.get("preset"));
+            processRunnerArguments.add(params.getPreset());
         }
 
-        createFiles(refFile, queryFiles, processRunnerCommands);
+        createFiles(refFile, queryFiles, processRunnerArguments);
 
         List<String> paramsCommands = new ArrayList<>();
 
@@ -170,15 +183,27 @@ public class ProcessService {
             paramsCommands.add(mappingParamsShorts.get("skipSelfAndDual"));
         }
 
-        processRunnerCommands.addAll(paramsCommands);
-        processRunnerCommands.add(params.getEmail());
-        processRunnerCommands.add("MAPPING");
+        processRunnerArguments.addAll(paramsCommands);
+        processRunnerArguments.add(params.getEmail());
+        processRunnerArguments.add("MAPPING");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("-Dexec.args=");
+        for (int i = 0; i < processRunnerArguments.size(); i++) {
+            if (i < processRunnerArguments.size() - 1) {
+                sb.append(processRunnerArguments.get(i) + " ");
+            } else {
+                sb.append(processRunnerArguments.get(i));
+            }
+        }
+
+        processRunnerCommands.add(sb.toString());
 
         startProcessRunner(processRunnerCommands);
 
     }
 
-    private void createFiles(MultipartFile refFile, MultipartFile[] queryFiles, List<String> processRunnerCommands) {
+    private void createFiles(MultipartFile refFile, MultipartFile[] queryFiles, List<String> processRunnerArguments) {
         String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss-SSS"));
         String refFileName = refFile.getOriginalFilename();
         File localRefFile = new File(refFilesPath + "/" + localDateTime + "_" + refFileName);
@@ -188,7 +213,7 @@ public class ProcessService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        processRunnerCommands.add(localRefFile.getAbsolutePath());
+        processRunnerArguments.add(localRefFile.getAbsolutePath());
         for (MultipartFile queryFile: queryFiles) {
             String queryFileName = queryFile.getOriginalFilename();
             File localQueryFile = new File(queryFilesPath + "/" + localDateTime + "_" + queryFileName);
@@ -198,17 +223,17 @@ public class ProcessService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            processRunnerCommands.add(localQueryFile.getAbsolutePath());
+            processRunnerArguments.add(localQueryFile.getAbsolutePath());
         }
     }
 
-    private void startProcessRunner(List<String> processRunnerCommands) {
+    private void startProcessRunner(List<String> processRunnerArguments) {
         System.out.println("Line that will be executed:");
-        for (String s: processRunnerCommands) {
+        for (String s: processRunnerArguments) {
             System.out.print(s + " ");
         }
         System.out.println();
-        ProcessBuilder pb = new ProcessBuilder(processRunnerCommands);
+        ProcessBuilder pb = new ProcessBuilder(processRunnerArguments);
         try {
             Process process = pb.start();
 
