@@ -15,10 +15,8 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 
 public class ProcessRunner {
 
@@ -126,7 +124,8 @@ public class ProcessRunner {
                 sb.append("\n");
                 sb.append("Thank you for using MapIt. :)");
                 System.out.println("About to send mail...");
-                sendEmail(email, "MapIt - alignment process results", sb.toString());
+                sendEmail(email, "MapIt - alignment process results", sb.toString(),
+                        Optional.empty(), Optional.empty());
             } else if (type.equals("MAPPING")) {
                 System.out.println("About to start paf analysis");
                 analysis = getPafAnalysis(outputFile);
@@ -143,19 +142,23 @@ public class ProcessRunner {
                 sb.append("\n");
                 sb.append("Thank you for using MapIt. :)");
                 System.out.println("About to send mail...");
-                sendEmail(email, "MapIt - mapping process results", sb.toString());
+                sendEmail(email, "MapIt - mapping process results", sb.toString(),
+                        Optional.empty(), Optional.empty());
             }
-            System.out.println("Email successfully sent!");
         } else {
-            /// u slučaju faila
+            StringBuilder sb = new StringBuilder();
+            sb.append("Hello,\n\n");
+            sb.append("Unfortunately, your process did not finish successfully. You can see more about the error in the " +
+                    "Minimap2 output log in the attachment of this email.\n");
+            sb.append("Thank you for using MapIt. :)");
+            System.out.println("About to send mail...");
+            sendEmail(email, "MapIt - process failed", sb.toString(), Optional.of("Minimap2-output.log"),
+                    Optional.of(errorFile));
         }
-
-
-
-
-
-
+        System.out.println("Email successfully sent!");
+        System.out.println("Shutting down...");
     }
+
     public static List<String> getPafAnalysis(File outputFile) {
         long positiveStrand = 0;
         long queryTotalLength = 0;
@@ -277,7 +280,8 @@ public class ProcessRunner {
         return analysis;
     }
 
-    private static void sendEmail(String mailTo, String subject, String mailContext) {
+    private static void sendEmail(String mailTo, String subject, String mailContext,
+                                  Optional<String> filename, Optional<File> file) {
         Properties props = new Properties();
         props.put("mail.smtp.ssl.enable", "true");
 ;
@@ -296,6 +300,8 @@ public class ProcessRunner {
             helper.setTo(mailTo);
             helper.setSubject(subject);
             helper.setText(mailContext);
+            if (file.isPresent() && filename.isPresent())
+                helper.addAttachment(filename.get(), file.get());
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
